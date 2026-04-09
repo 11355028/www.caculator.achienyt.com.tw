@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>阿簽日期與時間工具</title>
+    <title>阿簽時間與日期小工具</title>
     <style>
         :root {
             --bg-color: #f5f7fa;
@@ -26,7 +26,6 @@
             }
         }
 
-        /* 手動切換樣式 */
         body.light-theme {
             --bg-color: #f5f7fa;
             --container-bg: #ffffff;
@@ -54,19 +53,33 @@
         .container {
             background: var(--container-bg);
             padding: 1.5rem 2rem;
-            border-radius: 16px;
+            border-radius: 20px;
             box-shadow: var(--shadow);
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
             margin-bottom: 20px;
             box-sizing: border-box;
+            transition: 0.3s;
         }
 
         h2 { border-left: 5px solid var(--accent-color); padding-left: 15px; margin: 0 0 15px 0; font-size: 1.3rem; }
         
-        /* 現在時刻樣式 */
-        #currentTimePanel { text-align: center; }
-        .clock { font-family: 'Courier New', monospace; font-size: 1.8rem; font-weight: bold; color: var(--accent-color); margin-top: 5px; }
+        /* --- 放大 3 倍的現在時刻樣式 --- */
+        #currentTimePanel { 
+            padding: 2.5rem 1rem;
+            border: 2px solid var(--accent-color);
+        }
+        .clock { 
+            font-family: 'Courier New', monospace; 
+            font-size: 5rem; /* 核心放大 */
+            font-weight: 900; 
+            color: var(--accent-color); 
+            line-height: 1;
+            margin: 15px 0;
+            text-shadow: 0 0 15px rgba(52, 152, 219, 0.3);
+            letter-spacing: -2px;
+        }
+        #liveDate { font-size: 1.2rem; font-weight: bold; opacity: 0.9; }
 
         select, input, button {
             width: 100%;
@@ -129,6 +142,11 @@
 
         #testPanel { display: none; background: #fff3cd; color: #856404; border: 1px dashed #ffeeba; text-align: center; }
         .result { margin-top: 15px; text-align: center; font-weight: bold; color: var(--accent-color); font-size: 1.2rem; }
+
+        /* 手機適應 */
+        @media (max-width: 480px) {
+            .clock { font-size: 3.5rem; }
+        }
     </style>
 </head>
 <body>
@@ -136,9 +154,9 @@
     <button class="theme-toggle" onclick="toggleTheme()">切換主題顏色</button>
 
     <div class="container" id="currentTimePanel">
-        <div style="font-size: 0.9rem; opacity: 0.8;">現在時刻</div>
+        <div style="font-size: 1.1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">Current Time</div>
         <div id="liveClock" class="clock">00:00:00</div>
-        <div id="liveDate" style="font-size: 0.9rem; margin-top: 5px;">2026年01月01日</div>
+        <div id="liveDate">2026年01月01日</div>
     </div>
 
     <div id="testPanel" class="container">
@@ -163,11 +181,11 @@
             <optgroup label="🧪 分科測驗" id="opt-ast"></optgroup>
         </select>
         <div style="margin-top:10px;">
-            <label style="font-size: 0.8rem;">開始日期：</label>
+            <label style="font-size: 0.8rem; font-weight: bold;">開始日期：</label>
             <input type="date" id="startDate">
         </div>
         <div style="margin-top:10px;">
-            <label style="font-size: 0.8rem;">結束日期：</label>
+            <label style="font-size: 0.8rem; font-weight: bold;">結束日期：</label>
             <input type="date" id="endDate">
         </div>
         <button onclick="calculateDiff()">計算天數</button>
@@ -179,7 +197,6 @@
     <script>
         let mockM = null; let mockD = null;
 
-        // 更新即時時鐘
         function updateLiveClock() {
             const now = new Date();
             const h = String(now.getHours()).padStart(2, '0');
@@ -190,7 +207,7 @@
             const d = now.getDate();
             
             document.getElementById('liveClock').innerText = `${h}:${m}:${s}`;
-            document.getElementById('liveDate').innerText = `${y}年${mo}月${d}日`;
+            document.getElementById('liveDate').innerText = `${y} 年 ${mo} 月 ${d} 日`;
         }
 
         function toggleTheme() {
@@ -290,11 +307,9 @@
             if(val) { document.getElementById('endDate').value = val; calculateDiff(); }
         }
 
-        // 初始化
         document.getElementById('startDate').valueAsDate = new Date();
         initSelect();
         
-        // 設定每秒更新
         setInterval(() => {
             updateLiveClock();
             updateCountdown();
