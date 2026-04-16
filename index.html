@@ -58,11 +58,25 @@
         .container.active { display: block; }
 
         /* 首頁巨大時鐘 */
-        #home { text-align: center; background: transparent; border: none; padding-top: 5vh; }
+        #home { 
+            text-align: center; 
+            background: transparent; 
+            border: none; 
+            padding-top: 10vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; /* 水平置中 */
+            justify-content: center; 
+        }
         .huge-clock { 
-            font-size: clamp(4rem, 18vw, 12rem); 
-            font-weight: 900; font-family: Arial, sans-serif; 
-            color: var(--primary-accent); line-height: 1.1; margin: 0;
+            font-size: clamp(4rem, 15vw, 12rem); 
+            font-weight: 900; 
+            font-family: Arial, sans-serif; 
+            color: #FFD700; /* 改為金黃色 */
+            line-height: 1.1; 
+            margin: 0 auto; /* 置中關鍵 */
+            text-align: center; /* 確保文字在容器內居中 */
+            display: block; /* 確保佔滿一行以利置中 */
             text-shadow: 3px 3px 0px var(--secondary-accent);
         }
         .huge-date { font-size: 2.5rem; margin-top: 20px; font-weight: bold; border-top: 2px solid var(--secondary-accent); display: inline-block; padding-top: 10px; }
