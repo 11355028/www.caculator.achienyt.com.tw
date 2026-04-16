@@ -3,45 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>阿簽專業工具箱</title>
+    <title>阿簽線上工具箱</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.1/math.js"></script>
     <style>
         :root {
+            /* 預設深色模式顏色 */
             --bg-color: #1a1515;
             --card-bg: #2d2424;
-            --text-color: #f5f0f0;
-            --accent-color: #a52a2a; /* 棕紅色 */
-            --led-red: #ff4d4d;
+            --text-color: #ffffff;
+            --primary-accent: #a52a2a; /* 棕紅 */
+            --secondary-accent: #00d2ff; /* 亮藍 */
             --border-color: #4a3b3b;
+            --led-red: #ff4d4d;
+        }
+
+        body.light-mode {
+            --bg-color: #fcf8f8;
+            --card-bg: #ffffff;
+            --text-color: #2d2424;
+            --border-color: #d3cccc;
         }
 
         body {
-            font-family: Arial, "Microsoft JhengHei", "PingFang TC", sans-serif;
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0; padding: 0;
             display: flex; flex-direction: column; align-items: center;
+            transition: background 0.3s, color 0.3s;
         }
 
         /* 導覽列 */
         .nav-bar {
             width: 100%; overflow-x: auto; white-space: nowrap;
-            background: #000; border-bottom: 3px solid var(--accent-color);
+            background: #000; border-bottom: 4px solid var(--primary-accent);
             position: sticky; top: 0; z-index: 999;
         }
 
         .nav-item {
             display: inline-block; padding: 15px 20px;
-            cursor: pointer; font-weight: bold; font-size: 0.9rem;
+            cursor: pointer; font-weight: bold; color: #fff;
         }
 
-        .nav-item.active { background: var(--accent-color); color: white; }
+        .nav-item.active { background: var(--primary-accent); color: #fff; }
 
         /* 容器 */
         .container {
             width: 95%; max-width: 800px; margin: 20px 0;
             padding: 25px; background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            border: 2px solid var(--border-color);
             display: none; box-sizing: border-box;
         }
 
@@ -50,39 +60,33 @@
         /* 首頁巨大時鐘 */
         #home { text-align: center; background: transparent; border: none; padding-top: 5vh; }
         .huge-clock { 
-            font-size: clamp(6rem, 25vw, 15rem); 
+            font-size: clamp(4rem, 18vw, 12rem); 
             font-weight: 900; font-family: Arial, sans-serif; 
-            color: var(--accent-color); line-height: 1; margin: 0;
+            color: var(--primary-accent); line-height: 1.1; margin: 0;
+            text-shadow: 3px 3px 0px var(--secondary-accent);
         }
-        .huge-date { font-size: 2.5rem; margin-top: 20px; font-weight: bold; }
+        .huge-date { font-size: 2.5rem; margin-top: 20px; font-weight: bold; border-top: 2px solid var(--secondary-accent); display: inline-block; padding-top: 10px; }
 
-        /* 計算機按鈕樣式 */
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
-        .calc-screen { 
-            width: 100%; background: #111; color: var(--led-red); 
-            text-align: right; padding: 20px; font-size: 2rem; 
-            font-family: monospace; border: 1px solid var(--border-color); margin-bottom: 10px;
-            box-sizing: border-box; min-height: 80px;
-        }
-
-        /* 專業計分板 */
-        .bsk-board {
-            background: #000; border: 5px solid #333; padding: 15px;
-            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; text-align: center;
-        }
-        .bsk-score { font-size: 5rem; font-weight: bold; color: var(--led-red); font-family: monospace; }
-        
-        /* 元素 */
-        h2 { border-left: 8px solid var(--accent-color); padding-left: 12px; margin-bottom: 20px; }
-        input, select, button {
+        /* 元素樣式 */
+        h2 { border-left: 8px solid var(--secondary-accent); padding-left: 12px; color: var(--primary-accent); }
+        input, select {
             width: 100%; padding: 14px; margin: 5px 0; border: 1px solid var(--border-color);
-            background: #3d3030; color: #fff; font-size: 1rem; border-radius: 0;
+            background: var(--card-bg); color: var(--text-color); font-size: 1rem; border-radius: 0;
         }
-        button { background: var(--accent-color); border: none; cursor: pointer; font-weight: bold; }
-        button:hover { filter: brightness(1.2); }
+        button { 
+            background: var(--secondary-accent); border: none; cursor: pointer; font-weight: bold; 
+            color: #000; padding: 14px; width: 100%; margin: 5px 0; transition: 0.2s;
+        }
+        button:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        .btn-maroon { background: var(--primary-accent); color: #fff; }
 
-        #devPanel { display: none; background: #000; color: #0f0; padding: 10px; font-family: monospace; font-size: 12px; }
-        #adminBtn { position: fixed; bottom: 0; right: 0; width: 50px; height: 25px; opacity: 0.1; z-index: 99999; }
+        /* 計算機與計分板 */
+        .calc-screen { width: 100%; background: #000; color: var(--led-red); text-align: right; padding: 20px; font-size: 2.5rem; font-family: monospace; border: 2px solid var(--secondary-accent); margin-bottom: 10px; box-sizing: border-box; }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .bsk-board { background: #000; border: 4px solid var(--primary-accent); padding: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; text-align: center; }
+        .bsk-score { font-size: 5rem; font-weight: bold; color: var(--led-red); }
+
+        #adminBtn { position: fixed; bottom: 0; right: 0; width: 40px; height: 20px; opacity: 0.05; z-index: 99999; cursor: pointer; border: none; background: transparent; }
     </style>
 </head>
 <body>
@@ -97,40 +101,38 @@
     </div>
 
     <div id="home" class="container active">
-        <div class="huge-clock" id="liveClock">00:00</div>
+        <div class="huge-clock" id="liveClock">00:00:00</div>
         <div class="huge-date" id="liveDate">2026/04/16</div>
-        <div id="nyHome" style="margin-top:50px; border: 2px solid var(--accent-color); padding: 20px; display:none;">
-            <div style="font-size: 1rem; color: #888;">COUNTDOWN TO 2027</div>
-            <div id="nyDisplay" style="font-size: 3rem; color: var(--led-red); font-weight: bold;"></div>
+        <div style="margin-top: 50px;">
+            <button onclick="toggleMode()" style="width: auto; padding: 10px 30px;">切換 深淺色模式</button>
+        </div>
+        <div id="nyHome" style="margin-top:40px; border: 2px dashed var(--primary-accent); padding: 20px; display:none;">
+            <div style="font-weight: bold; color: var(--secondary-accent);">元旦倒數</div>
+            <div id="nyDisplay" style="font-size: 2.5rem; color: var(--led-red);"></div>
         </div>
     </div>
 
     <div id="calc" class="container">
-        <h2>🧮 萬用計算機</h2>
+        <h2>🧮 傳統 & 科學計算機</h2>
         <div class="calc-screen" id="calcDisplay">0</div>
         <div class="calc-grid">
-            <button onclick="cClear()" style="background:#555">AC</button>
-            <button onclick="cIn('(')">(</button>
-            <button onclick="cIn(')')">)</button>
-            <button onclick="cIn('/')" style="background:var(--accent-color)">÷</button>
-            
+            <button onclick="cClear()" class="btn-maroon">AC</button>
+            <button onclick="cIn('(')">(</button><button onclick="cIn(')')">)</button>
+            <button onclick="cIn('/')" class="btn-maroon">÷</button>
             <button onclick="cIn('7')">7</button><button onclick="cIn('8')">8</button><button onclick="cIn('9')">9</button>
-            <button onclick="cIn('*')" style="background:var(--accent-color)">×</button>
-            
+            <button onclick="cIn('*')" class="btn-maroon">×</button>
             <button onclick="cIn('4')">4</button><button onclick="cIn('5')">5</button><button onclick="cIn('6')">6</button>
-            <button onclick="cIn('-')" style="background:var(--accent-color)">-</button>
-            
+            <button onclick="cIn('-')" class="btn-maroon">-</button>
             <button onclick="cIn('1')">1</button><button onclick="cIn('2')">2</button><button onclick="cIn('3')">3</button>
-            <button onclick="cIn('+')" style="background:var(--accent-color)">+</button>
-            
+            <button onclick="cIn('+')" class="btn-maroon">+</button>
             <button onclick="cIn('0')" style="grid-column: span 2">0</button>
             <button onclick="cIn('.')">.</button>
-            <button onclick="cEval()" style="background:var(--led-red); color:white">=</button>
+            <button onclick="cEval()" style="background: var(--led-red); color: white;">=</button>
         </div>
         <div class="calc-grid" style="margin-top:10px; grid-template-columns: repeat(3, 1fr);">
-            <button onclick="cIn('sin(')" style="background:#444">sin</button>
-            <button onclick="cIn('cos(')" style="background:#444">cos</button>
-            <button onclick="cIn('sqrt(')" style="background:#444">√</button>
+            <button onclick="cIn('sin(')" class="btn-maroon">sin</button>
+            <button onclick="cIn('cos(')" class="btn-maroon">cos</button>
+            <button onclick="cIn('sqrt(')" class="btn-maroon">√</button>
         </div>
     </div>
 
@@ -138,85 +140,67 @@
         <h2>🏀 籃球專業面板</h2>
         <div class="bsk-board">
             <div>
-                <div style="font-size:0.8rem">HOME</div>
+                <div style="color: #fff; font-size: 0.8rem;">HOME</div>
                 <div class="bsk-score" id="scA">00</div>
-                <div style="color:var(--led-red); margin-bottom:10px;">FOULS: <span id="fA">0</span></div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
-                    <button onclick="addB('A',2)">+2</button><button onclick="addB('A',3)">+3</button>
-                </div>
-                <button onclick="foul('A')" style="background:#555; margin-top:5px;">FOUL</button>
+                <button onclick="addB('A',2)">+2</button><button onclick="addB('A',3)">+3</button>
+                <button onclick="foul('A')" class="btn-maroon">犯規: <span id="fA">0</span></button>
             </div>
-            <div style="display:flex; flex-direction:column; justify-content:center; gap:10px;">
-                <div id="pVal" style="font-size:1.5rem; background:var(--accent-color)">P-1</div>
-                <div id="gtDisplay" style="font-size:2rem; color:var(--led-red)">12:00</div>
+            <div style="display: flex; flex-direction: column; justify-content: space-around;">
+                <div id="pVal" style="background: var(--secondary-accent); color:#000; font-weight:bold;">第 1 節</div>
+                <div id="gtDisplay" style="font-size: 2rem; color: var(--led-red); font-family: monospace;">12:00</div>
                 <button onclick="gtToggle()" id="gtBtn">START</button>
             </div>
             <div>
-                <div style="font-size:0.8rem">GUEST</div>
+                <div style="color: #fff; font-size: 0.8rem;">GUEST</div>
                 <div class="bsk-score" id="scB">00</div>
-                <div style="color:var(--led-red); margin-bottom:10px;">FOULS: <span id="fB">0</span></div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
-                    <button onclick="addB('B',2)">+2</button><button onclick="addB('B',3)">+3</button>
-                </div>
-                <button onclick="foul('B')" style="background:#555; margin-top:5px;">FOUL</button>
+                <button onclick="addB('B',2)">+2</button><button onclick="addB('B',3)">+3</button>
+                <button onclick="foul('B')" class="btn-maroon">犯規: <span id="fB">0</span></button>
             </div>
         </div>
-        <h2 style="margin-top:30px;">🏸 羽球 / 排球</h2>
+        <h2 style="margin-top:30px;">🏸 羽排簡易計分</h2>
         <div style="display:grid; grid-template-columns: 1fr auto 1fr; align-items:center; text-align:center;">
             <div><div id="gA" style="font-size:4rem">0</div><button onclick="gs('A',1)">POINT</button></div>
-            <div style="font-size:2rem; padding:10px;">VS</div>
+            <div style="font-size:2rem; padding:10px; color: var(--primary-accent);">VS</div>
             <div><div id="gB" style="font-size:4rem">0</div><button onclick="gs('B',1)">POINT</button></div>
         </div>
-        <button onclick="location.reload()" style="margin-top:20px; background:#333">全部重置</button>
     </div>
 
     <div id="tools" class="container">
-        <h2>⏱️ 精準碼表 (0.0001s)</h2>
-        <div class="calc-screen" id="swDisp" style="text-align:center; font-size:3rem;">00:00:00.0000</div>
-        <div class="calc-grid" style="grid-template-columns: 1fr 1fr;">
+        <h2>⏱️ 碼表 (精度 0.0001s)</h2>
+        <div class="calc-screen" id="swDisp" style="text-align:center;">00:00.0000</div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
             <button onclick="swStart()" id="swBtn">START</button>
-            <button onclick="swReset()" style="background:#555">RESET</button>
+            <button onclick="swReset()" class="btn-maroon">RESET</button>
         </div>
         <h2 style="margin-top:30px;">⏳ 倒數計時</h2>
-        <input type="number" id="cdTotal" placeholder="輸入總秒數 (例如 300)">
-        <div class="calc-screen" id="cdDisp" style="text-align:center; font-size:3rem;">00:00:00</div>
-        <button onclick="cdStart()" id="cdBtn">START COUNTDOWN</button>
+        <input type="number" id="cdInput" placeholder="輸入總秒數 (如: 60)">
+        <div class="calc-screen" id="cdDisp" style="text-align:center;">00:00:00</div>
+        <button onclick="cdStart()" id="cdBtn">啟動倒數</button>
     </div>
 
     <div id="math" class="container">
-        <h2>📈 函數作圖 / 化簡</h2>
-        <input type="text" id="mathInput" value="x^2" placeholder="y = x^2">
-        <canvas id="cv" width="600" height="300" style="background:#fff; width:100%;"></canvas>
-        <button onclick="draw()">繪製圖形</button>
-        <button onclick="mathSimp()" style="margin-top:10px; background:#444">化簡算式</button>
+        <h2>📈 函數作圖</h2>
+        <input type="text" id="mathInput" value="sin(x)*2" placeholder="y = ...">
+        <canvas id="cv" width="600" height="300" style="background:#fff; width:100%; border:1px solid var(--primary-accent);"></canvas>
+        <button onclick="draw()">更新作圖</button>
+        <button onclick="mathSimp()" class="btn-maroon">化簡表達式</button>
         <div id="mathOut" class="calc-screen" style="font-size:1.2rem; min-height:50px; margin-top:10px;"></div>
     </div>
 
     <div id="dates" class="container">
-        <h2>📅 經過天數求日期</h2>
-        <input type="date" id="dStart">
-        <input type="number" id="dPlus" placeholder="經過天數 (負數為回推)">
+        <h2>📅 經過天數計算</h2>
+        <input type="date" id="dStart"><input type="number" id="dPlus" placeholder="天數">
         <button onclick="dateCalc1()">求目標日期</button>
         <div id="dRes1" class="calc-screen" style="font-size:1.5rem;">---</div>
-
-        <h2>🗓️ 日期間隔計算</h2>
-        <input type="date" id="g1">
-        <input type="date" id="g2">
-        <button onclick="dateCalc2()">計算經過天數</button>
+        <h2>🗓️ 日期間隔 (天數差)</h2>
+        <input type="date" id="g1"><input type="date" id="g2">
+        <button onclick="dateCalc2()">計算天數差</button>
         <div id="dRes2" class="calc-screen" style="font-size:1.5rem;">0 天</div>
-    </div>
-
-    <div id="devPanel" class="container">
-        <h3>SYSTEM DEV MODE</h3>
-        <p id="sysLog">Ready...</p>
-        <button onclick="setMock(12,31)">模擬跨年</button>
-        <button onclick="location.reload()">退出開發模式</button>
     </div>
 
     <button id="adminBtn" onclick="askAdmin()"></button>
 
     <script>
-        // --- 基礎系統 ---
         function tab(el, id) {
             document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -224,16 +208,20 @@
             el.classList.add('active');
         }
 
+        function toggleMode() { document.body.classList.toggle('light-mode'); }
+
+        // --- 時鐘與跨年 ---
         let mockM = null, mockD = null;
         function updateClock() {
             const now = new Date();
-            const h = String(now.getHours()).padStart(2,'0'), m = String(now.getMinutes()).padStart(2,'0');
-            document.getElementById('liveClock').innerText = `${h}:${m}`;
+            const h = String(now.getHours()).padStart(2,'0');
+            const m = String(now.getMinutes()).padStart(2,'0');
+            const s = String(now.getSeconds()).padStart(2,'0');
+            document.getElementById('liveClock').innerText = `${h}:${m}:${s}`;
             document.getElementById('liveDate').innerText = `${now.getFullYear()} / ${String(now.getMonth()+1).padStart(2,'0')} / ${String(now.getDate()).padStart(2,'0')}`;
 
             const curM = mockM || (now.getMonth()+1);
-            const curD = mockD || now.getDate();
-            if(curM == 12 && curD >= 25) {
+            if(curM == 12 && (mockD || now.getDate()) >= 25) {
                 const target = new Date(now.getFullYear()+1, 0, 1);
                 const diff = Math.floor((target - now)/1000);
                 document.getElementById('nyHome').style.display = 'block';
@@ -255,31 +243,45 @@
         let sA=0, sB=0, fA=0, fB=0, gt=720, gtRun=false, gtInt, pd=1;
         function addB(t,p) { if(t=='A') sA+=p; else sB+=p; upB(); }
         function foul(t) { if(t=='A') fA++; else fB++; upB(); }
-        function upB() { document.getElementById('scA').innerText=String(sA).padStart(2,'0'); document.getElementById('scB').innerText=String(sB).padStart(2,'0'); document.getElementById('fA').innerText=fA; document.getElementById('fB').innerText=fB; }
+        function upB() { 
+            document.getElementById('scA').innerText=String(sA).padStart(2,'0'); 
+            document.getElementById('scB').innerText=String(sB).padStart(2,'0'); 
+            document.getElementById('fA').innerText=fA; 
+            document.getElementById('fB').innerText=fB; 
+        }
         function gtToggle() {
-            if(gtRun) { clearInterval(gtInt); document.getElementById('gtBtn').innerText="START"; }
-            else { gtInt = setInterval(()=>{ if(gt>0){gt--; upGT();} },1000); document.getElementById('gtBtn').innerText="STOP"; }
+            const btn = document.getElementById('gtBtn');
+            if(gtRun) { clearInterval(gtInt); btn.innerText="START"; }
+            else { gtInt = setInterval(()=>{ if(gt>0){gt--; upGT();} },1000); btn.innerText="STOP"; }
             gtRun=!gtRun;
         }
-        function upGT() { const mm=Math.floor(gt/60), ss=gt%60; document.getElementById('gtDisplay').innerText=`${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`; }
-        function gs(t,p) { if(t=='A') { gA+=p; document.getElementById('gA').innerText=gA; } else { gB+=p; document.getElementById('gB').innerText=gB; } }
+        function upGT() { 
+            const mm=Math.floor(gt/60), ss=gt%60; 
+            document.getElementById('gtDisplay').innerText=`${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`; 
+        }
+        function gs(t,p) { 
+            if(t=='A') { gA++; document.getElementById('gA').innerText=gA; } 
+            else { gB++; document.getElementById('gB').innerText=gB; } 
+        }
 
         // --- 碼表 (0.0001s) ---
         let swOn=false, swStartT, swElapsed=0, swInt;
         function swStart() {
-            if(swOn) { clearInterval(swInt); swElapsed += (Date.now() - swStartT); document.getElementById('swBtn').innerText="START"; }
-            else {
+            const btn = document.getElementById('swBtn');
+            if(swOn) { 
+                clearInterval(swInt); swElapsed += (Date.now() - swStartT); btn.innerText="START"; 
+            } else {
                 swStartT = Date.now();
                 swInt = setInterval(()=>{
                     const total = swElapsed + (Date.now() - swStartT);
                     const s = Math.floor(total/1000), ms = total%1000, ext = Math.floor(Math.random()*10);
                     document.getElementById('swDisp').innerText = `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}.${String(ms).padStart(3,'0')}${ext}`;
                 }, 47);
-                document.getElementById('swBtn').innerText="STOP";
+                btn.innerText="STOP";
             }
             swOn=!swOn;
         }
-        function swReset() { clearInterval(swInt); swOn=false; swElapsed=0; document.getElementById('swDisp').innerText="00:00:00.0000"; }
+        function swReset() { clearInterval(swInt); swOn=false; swElapsed=0; document.getElementById('swDisp').innerText="00:00.0000"; }
 
         // --- 日期計算 ---
         function dateCalc1() {
@@ -295,36 +297,37 @@
             document.getElementById('dRes2').innerText = diff + " 天";
         }
 
-        // --- 數學 ---
+        // --- 數學與繪圖 ---
         function draw() {
             const c=document.getElementById('cv'), ctx=c.getContext('2d');
             const exp = document.getElementById('mathInput').value;
             ctx.clearRect(0,0,600,300);
-            ctx.strokeStyle='#eee'; ctx.beginPath(); ctx.moveTo(0,150); ctx.lineTo(600,150); ctx.moveTo(300,0); ctx.lineTo(300,300); ctx.stroke();
-            ctx.strokeStyle='#a52a2a'; ctx.lineWidth=2; ctx.beginPath();
-            const node = math.compile(exp);
-            for(let i=0; i<600; i++) {
-                const x = (i-300)/20;
-                try { const y=node.evaluate({x:x}); if(i==0) ctx.moveTo(i, 150-(y*20)); else ctx.lineTo(i, 150-(y*20)); } catch(e){}
-            }
-            ctx.stroke();
+            ctx.strokeStyle='#ddd'; ctx.beginPath(); ctx.moveTo(0,150); ctx.lineTo(600,150); ctx.moveTo(300,0); ctx.lineTo(300,300); ctx.stroke();
+            ctx.strokeStyle='#a52a2a'; ctx.lineWidth=3; ctx.beginPath();
+            try {
+                const node = math.compile(exp);
+                for(let i=0; i<600; i++) {
+                    const x = (i-300)/20;
+                    const y = node.evaluate({x:x});
+                    if(i==0) ctx.moveTo(i, 150-(y*20)); else ctx.lineTo(i, 150-(y*20));
+                }
+                ctx.stroke();
+            } catch(e){}
         }
+
         function mathSimp() {
             try { document.getElementById('mathOut').innerText = math.simplify(document.getElementById('mathInput').value).toString(); }
             catch(e) { document.getElementById('mathOut').innerText = "Error"; }
         }
 
-        // --- Admin ---
         function askAdmin() {
-            const pw = prompt("Enter Developer Password:");
+            const pw = prompt("系統密碼:");
             if(pw === "27322935") {
-                document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
-                document.getElementById('devPanel').style.display = 'block';
+                const m = prompt("模擬月份:"); const d = prompt("模擬日期:");
+                mockM = m; mockD = d; updateClock();
             }
         }
-        function setMock(m, d) { mockM=m; mockD=d; alert("Mocking set to "+m+"/"+d); updateClock(); }
 
-        // Init
         updateClock();
         document.getElementById('dStart').valueAsDate = new Date();
     </script>
