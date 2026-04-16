@@ -15,6 +15,7 @@
             --secondary-accent: #00d2ff; /* 亮藍 */
             --border-color: #4a3b3b;
             --led-red: #ff4d4d;
+            --clock-color: #FFFF00; /* 深色模式：黃色 */
         }
 
         body.light-mode {
@@ -22,6 +23,7 @@
             --card-bg: #ffffff;
             --text-color: #2d2424;
             --border-color: #d3cccc;
+            --clock-color: #5D4037; /* 淺色模式：深咖啡色 */
         }
 
         body {
@@ -72,17 +74,18 @@
             max-width: none;      /* 移除首頁容器限制 */
         }
 
-        .huge-clock { 
+       .huge-clock { 
             font-size: clamp(4rem, 18vw, 12rem); 
             font-weight: 900; 
             font-family: Arial, sans-serif; 
-            color: #FFFF00;       /* 正黃色 */
+            color: var(--clock-color); /* 這裡改用變數控制顏色 */
             line-height: 1.1; 
-            margin: 0 auto;       /* 自動間距置中 */
+            margin: 0 auto;
             display: block; 
             width: 100%;
             text-align: center;
             text-shadow: 3px 3px 0px var(--secondary-accent);
+            transition: color 0.3s; /* 讓顏色切換更平滑 */
         }
 
         .huge-date { 
